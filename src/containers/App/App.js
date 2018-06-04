@@ -1,8 +1,19 @@
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
 import styledNormalize from 'styled-normalize'
-import { injectGlobal } from 'styled-components'
+import { injectGlobal, ThemeProvider } from 'styled-components'
+import { injectLayoutBaseCSS } from 'styled-bootstrap-grid';
 
+const defaultTheme = {
+  jetBlack: '#131516',
+  darkLiver: 'rgba(81, 81, 79, 1)',
+  sunsetOrange: 'rgba(242, 94, 92, 1)',
+  mustard: 'rgba(255, 224, 102, 1)',
+  lapisZapuli: 'rgba(35, 123, 160, 1)',
+  greenSheen: 'rgba(112, 193, 178, 1)'
+};
+
+injectLayoutBaseCSS();
 injectGlobal`
   ${styledNormalize}
 
@@ -11,6 +22,7 @@ injectGlobal`
 
   body {
     font-family: 'Noto Sans', sans-serif;
+    color: ${defaultTheme.jetBlack};
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -19,15 +31,17 @@ injectGlobal`
 `
 
 const App = () => (
-  <div>
-    <header>
-      <Link to="/">Home</Link>
-    </header>
+  <ThemeProvider theme={defaultTheme}>
+    <div>
+      <header>
+        <Link to="/">Home</Link>
+      </header>
 
-    <main>
-      <Route exact path="/" render={() => (<h1>Veikkauslaarnio</h1>)} />
-    </main>
-  </div>
+      <main>
+        <Route exact path="/" render={() => (<h1>Veikkauslaarnio</h1>)} />
+      </main>
+    </div>
+  </ThemeProvider>
 );
 
 export default App;
