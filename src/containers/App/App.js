@@ -3,6 +3,9 @@ import { Route, Link } from 'react-router-dom';
 import styledNormalize from 'styled-normalize'
 import { injectGlobal, ThemeProvider } from 'styled-components'
 import { injectLayoutBaseCSS } from 'styled-bootstrap-grid';
+import { requireAuthentication } from '../../components/ProtectedComponent/ProtectedComponent';
+import Login from '../Login';
+import Dashboard from '../Dashboard';
 
 const defaultTheme = {
   jetBlack: '#131516',
@@ -38,7 +41,8 @@ const App = () => (
       </header>
 
       <main>
-        <Route exact path="/" render={() => (<h1>Veikkauslaarnio</h1>)} />
+        <Route exact path="/" component={requireAuthentication(Dashboard)}/>
+        <Route exact path="/login" component={Login} />
       </main>
     </div>
   </ThemeProvider>
