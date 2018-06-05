@@ -1,9 +1,13 @@
-import React from 'react';
-import { Route, Link } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { Route, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styledNormalize from 'styled-normalize'
-import { injectGlobal, ThemeProvider } from 'styled-components'
+import styled, { injectGlobal, ThemeProvider } from 'styled-components'
 import { injectLayoutBaseCSS } from 'styled-bootstrap-grid';
-import { requireAuthentication } from '../../components/ProtectedComponent/ProtectedComponent';
+import { connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
+import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper';
+import { routerActions } from 'react-router-redux'
+import { checkAuth } from '../../modules/authentication';
 import Login from '../Login';
 import Dashboard from '../Dashboard';
 
@@ -33,19 +37,45 @@ injectGlobal`
   }
 `
 
-const App = () => (
-  <ThemeProvider theme={defaultTheme}>
-    <div>
-      <header>
-        <Link to="/">Home</Link>
-      </header>
+const Wrapper = styled.main`
+  padding: 1rem;
+`;
 
-      <main>
-        <Route exact path="/" component={requireAuthentication(Dashboard)}/>
-        <Route exact path="/login" component={Login} />
-      </main>
-    </div>
-  </ThemeProvider>
-);
+const userIsAuthenticated = connectedReduxRedirect({
+ redirectPath: '/login',
+ authenticatedSelector: state => !!state.auth.user,
+ wrapperDisplayName: 'UserIsAuthenticated',
+ redirectAction: routerActions.replace
+});
 
-export default App;
+const locationHelper = locationHelperBuilder({});
+const userIsNotAuthenticated = connectedReduxRedirect({
+  redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/dashboard',
+  allowRedirectBack: false,
+  authenticatedSelector: state => !state.auth.user,
+  wrapperDisplayName: 'UserIsNotAuthenticated',
+  redirectAction: routerActions.replace
+});
+
+class App extends Component {
+  componentDidMount() {
+    this.props.checkAuth();
+  }
+
+  render() {
+    return (
+      <ThemeProvider theme={defaultTheme}>
+        <Fragment>
+          <Route exact path="/login" component={userIsNotAuthenticated(Login)} />
+          <Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />
+
+          <Wrapper>
+            <Route exact path="/dashboard" component={userIsAuthenticated(Dashboard)} />
+          </Wrapper>
+        </Fragment>
+      </ThemeProvider>
+    );
+  }
+}
+
+export default withRouter(connect(null, { checkAuth })(App));

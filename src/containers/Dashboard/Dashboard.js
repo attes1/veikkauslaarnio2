@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 const Dashboard = () => (
   <div>
@@ -6,4 +8,4 @@ const Dashboard = () => (
   </div>
 );
 
-export default Dashboard;
+export default withRouter(connect()(Dashboard));
