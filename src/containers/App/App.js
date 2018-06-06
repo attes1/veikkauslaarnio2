@@ -43,7 +43,7 @@ const Wrapper = styled.main`
 
 const userIsAuthenticated = connectedReduxRedirect({
  redirectPath: '/login',
- authenticatedSelector: state => !!state.auth.user,
+ authenticatedSelector: state => !!state.auth.user && !state.auth.invitationCodeRequired,
  wrapperDisplayName: 'UserIsAuthenticated',
  redirectAction: routerActions.replace
 });
@@ -52,7 +52,7 @@ const locationHelper = locationHelperBuilder({});
 const userIsNotAuthenticated = connectedReduxRedirect({
   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/dashboard',
   allowRedirectBack: false,
-  authenticatedSelector: state => !state.auth.user,
+  authenticatedSelector: state => !state.auth.user || state.auth.invitationCodeRequired,
   wrapperDisplayName: 'UserIsNotAuthenticated',
   redirectAction: routerActions.replace
 });
