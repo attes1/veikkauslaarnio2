@@ -103,10 +103,10 @@ class Login extends Component {
                     <InvitationCodeForm handleChange={this.handleInvitationCodeChange} />
                   </Fragment> :
                   <Fragment>
-                    <FacebookLoginButton onClick={this.props.signIn}>
+                    <FacebookLoginButton onClick={() => this.props.signIn('facebook')}>
                       Sign in with Facebook
                     </FacebookLoginButton>
-                    <GoogleLoginButton onClick={this.props.signIn}>
+                    <GoogleLoginButton onClick={() => this.props.signIn('google')}>
                       Sign in with Google
                     </GoogleLoginButton>
                   </Fragment>

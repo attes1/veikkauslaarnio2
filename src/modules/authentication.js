@@ -10,10 +10,18 @@ const requireInvitationCode = createAction('Require invitation code');
 const invitationCodeValid = createAction('Valid invitation code entered');
 
 const fbAuthProvider = new firebaseApp.auth.FacebookAuthProvider();
+const gAuthProvider = new firebaseApp.auth.GoogleAuthProvider();
 
-export const signIn = () => {
+export const signIn = (providerName) => {
   return dispatch => {
-    return firebaseAuth.signInWithRedirect(fbAuthProvider);
+    switch (providerName) {
+      case 'facebook':
+        return firebaseAuth.signInWithRedirect(fbAuthProvider);
+      case 'google':
+        return firebaseAuth.signInWithRedirect(gAuthProvider);
+      default:
+        return;
+    }
   };
 };
 
