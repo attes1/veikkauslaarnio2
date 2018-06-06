@@ -13,6 +13,15 @@ import Dashboard from '../Dashboard';
 
 const defaultTheme = {
   jetBlack: '#131516',
+  raven: '#373D3F',
+  asher: '#555F61',
+  stone: '#707C80',
+  gray: '#8C979A',
+  sterling: '#A7B0B2',
+  heather: '#C1C7C9',
+  pearl: '#DADEDF',
+  lilia: '#F2F3F4',
+
   darkLiver: 'rgba(81, 81, 79, 1)',
   sunsetOrange: 'rgba(242, 94, 92, 1)',
   mustard: 'rgba(255, 224, 102, 1)',
