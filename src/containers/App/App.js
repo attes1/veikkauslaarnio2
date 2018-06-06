@@ -10,6 +10,7 @@ import { routerActions } from 'react-router-redux'
 import { checkAuth } from '../../modules/authentication';
 import Login from '../Login';
 import Dashboard from '../Dashboard';
+import PrivaryPolicy from '../PrivacyPolicy';
 
 const defaultTheme = {
   jetBlack: '#131516',
