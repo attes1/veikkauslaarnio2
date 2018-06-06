@@ -5,7 +5,7 @@ const signInSuccess = createAction('Sign in success');
 const signInFailure = createAction('Sign in failed');
 const signOutSuccess = createAction('Sign out success');
 const signOutFailure = createAction('Sign out success');
-const finishRedirectHandle = createAction('Redirect handler finished');
+const finishAuthenticating = createAction('Finished authenticating');
 const requireInvitationCode = createAction('Require invitation code');
 const invitationCodeValid = createAction('Valid invitation code entered');
 
@@ -30,29 +30,6 @@ export const signOut = () => {
   }
 };
 
-export const handleRedirectResult = () => {
-  return (dispatch, getState) => {
-    if (getState().auth.isHandlingRedirect) {
-      return firebaseAuth
-        .getRedirectResult()
-        .then(result => {
-          if (!result.user) {
-            // Remove spinner after 2 secs if not already removed
-            setTimeout(() => {
-              if (getState().auth.isHandlingRedirect) {
-                dispatch(finishRedirectHandle());
-              }
-            }, 2000);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          dispatch(finishRedirectHandle());
-        });
-    }
-  }
-};
-
 export const checkAuth = () => {
   return (dispatch, getState) => {
     return firebaseAuth.onAuthStateChanged(user => {
@@ -63,13 +40,20 @@ export const checkAuth = () => {
           .onSnapshot(userSnapshot => {
             const userProfile = userSnapshot.data();
 
-            if (userProfile) {
-              if (userProfile.verified) {
-                dispatch(signInSuccess(userProfile));
-              } else {
-                dispatch(requireInvitationCode());
-              }
+            if (userProfile && userProfile.verified) {
+              dispatch(signInSuccess(userProfile));
+            } else {
+              dispatch(requireInvitationCode());
             }
+          });
+      } else {
+        return firebaseAuth
+          .getRedirectResult()
+          .catch(err => {
+            console.error(err);
+          })
+          .finally(() => {
+            dispatch(finishAuthenticating());
           });
       }
     });
@@ -97,22 +81,22 @@ export default createReducer({
     return Object.assign({}, { ...state, user: null, error });
   },
   [signOutSuccess]: (state, user) => {
-    return Object.assign({}, { ...state, user: null, error: null, isHandlingRedirect: false });
+    return Object.assign({}, { ...state, user: null, error: null, isAuthenticating: false });
   },
   [signOutFailure]: (state, error) => {
     return Object.assign({}, { ...state, user: null, error });
   },
-  [finishRedirectHandle]: (state) => {
-    return Object.assign({}, { ...state, isHandlingRedirect: false });
+  [finishAuthenticating]: (state) => {
+    return Object.assign({}, { ...state, isAuthenticating: false });
   },
   [requireInvitationCode]: (state) => {
-    return Object.assign({}, { ...state, invitationCodeRequired: true, isHandlingRedirect: false });
+    return Object.assign({}, { ...state, invitationCodeRequired: true, isAuthenticating: false });
   },
   [invitationCodeValid]: (state) => {
-    return Object.assign({}, { ...state, invitationCodeRequired: false, isHandlingRedirect: false });
+    return Object.assign({}, { ...state, invitationCodeRequired: false, isAuthenticating: false });
   }
 }, {
   user: null,
-  isHandlingRedirect: true,
+  isAuthenticating: true,
   invitationCodeRequired: false
 });

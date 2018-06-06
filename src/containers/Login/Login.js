@@ -14,10 +14,6 @@ const InvitationCodeForm = reduxForm({ form: 'InvitationCodeForm' })(({ handleCh
 )});
 
 class Login extends Component {
-  componentDidMount() {
-    this.props.handleRedirectResult();
-  }
-
   handleInvitationCodeChange = (evt) => {
     const code = evt.target.value;
 
@@ -53,4 +49,4 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default withRouter(connect(mapStateToProps, { signIn, handleRedirectResult, verifyUser })(Login));
+export default withRouter(connect(mapStateToProps, { signIn, verifyUser })(Login));
