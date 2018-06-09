@@ -1,16 +1,27 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styledNormalize from 'styled-normalize'
-import styled, { injectGlobal, ThemeProvider } from 'styled-components'
+import { injectGlobal, ThemeProvider } from 'styled-components'
 import { injectLayoutBaseCSS } from 'styled-bootstrap-grid';
+import ReactBreakpoints from 'react-breakpoints'
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper';
+import connectedAuthWrapper from 'redux-auth-wrapper/connectedAuthWrapper'
 import { routerActions } from 'react-router-redux'
+import { Container } from 'styled-bootstrap-grid';
 import { checkAuth } from '../../modules/authentication';
 import Login from '../Login';
 import Dashboard from '../Dashboard';
 import PrivaryPolicy from '../PrivacyPolicy';
+import Header from '../../components/Header';
+
+const breakpoints = {
+  sm: 575,
+  md: 768,
+  lg: 992,
+  xl: 1200
+};
 
 const defaultTheme = {
   jetBlack: '#131516',
@@ -22,6 +33,7 @@ const defaultTheme = {
   heather: '#C1C7C9',
   pearl: '#DADEDF',
   lilia: '#F2F3F4',
+  smoke: '#FCFCFC',
 
   darkLiver: 'rgba(81, 81, 79, 1)',
   sunsetOrange: 'rgba(242, 94, 92, 1)',
@@ -47,25 +59,28 @@ injectGlobal`
   }
 `
 
-const Wrapper = styled.main`
-  padding: 1rem;
-`;
-
-const userIsAuthenticated = connectedReduxRedirect({
+const userIsAuthenticatedRedirect = connectedReduxRedirect({
  redirectPath: '/login',
  authenticatedSelector: state => !!state.auth.user && !state.auth.invitationCodeRequired,
- wrapperDisplayName: 'UserIsAuthenticated',
+ wrapperDisplayName: 'UserIsAuthenticatedRedirect',
  redirectAction: routerActions.replace
 });
 
 const locationHelper = locationHelperBuilder({});
-const userIsNotAuthenticated = connectedReduxRedirect({
+const userIsNotAuthenticatedRedirect = connectedReduxRedirect({
   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || '/dashboard',
   allowRedirectBack: false,
   authenticatedSelector: state => !state.auth.user || state.auth.invitationCodeRequired,
-  wrapperDisplayName: 'UserIsNotAuthenticated',
+  wrapperDisplayName: 'UserIsNotAuthenticatedRedirect',
   redirectAction: routerActions.replace
 });
+
+const userIsAuthenticated = connectedAuthWrapper({
+  authenticatedSelector: state => !!state.auth.user && !state.auth.invitationCodeRequired,
+  wrapperDisplayName: 'UserIsAuthenticated'
+});
+
+const HeaderWrapper = userIsAuthenticated((props) => <Header {...props} />);
 
 class App extends Component {
   componentDidMount() {
@@ -75,14 +90,16 @@ class App extends Component {
   render() {
     return (
       <ThemeProvider theme={defaultTheme}>
-        <Fragment>
-          <Route exact path="/login" component={userIsNotAuthenticated(Login)} />
+        <ReactBreakpoints breakpoints={breakpoints}>
+          <Route exact path="/privacy" component={PrivaryPolicy} />
+          <Route exact path="/login" component={userIsNotAuthenticatedRedirect(Login)} />
           <Route exact path="/" render={() => (<Redirect to="/dashboard" />)} />
 
-          <Wrapper>
-            <Route exact path="/dashboard" component={userIsAuthenticated(Dashboard)} />
-          </Wrapper>
-        </Fragment>
+          <HeaderWrapper />
+          <Container>
+            <Route exact path="/dashboard" component={userIsAuthenticatedRedirect(Dashboard)} />
+          </Container>
+        </ReactBreakpoints>
       </ThemeProvider>
     );
   }
