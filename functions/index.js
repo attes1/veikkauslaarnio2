@@ -76,7 +76,12 @@ exports.fetchFixtures = functions.https.onCall((data, context) => {
     })
     .then(response => {
       return Promise.all(response.data.fixtures.map(fixt => {
-        const fixture = _.omit(fixt, ['homeTeamName', 'homeTeamName']);
+        let fixture = _.omit(fixt, ['homeTeamName', 'homeTeamName', 'homeTeamId', 'awayTeamId', 'competitionId']);
+        fixture = _.extend(fixture, {
+          homeTeam: fixt.homeTeamId,
+          awayTeam: fixt.awayTeamId,
+          competition: fixt.competitionId
+        });
 
         return db
           .collection('fixtures')
@@ -125,7 +130,12 @@ exports.fetchCompetitionData = functions.https.onCall((data, context) => {
   //   })
   //   .then(response => {
   //     return Promise.all(response.data.fixtures.map(fixt => {
-  //       const fixture = _.omit(fixt, ['homeTeamName', 'homeTeamName']);
+  //       let fixture = _.omit(fixt, ['homeTeamName', 'awayTeamName', 'homeTeamId', 'awayTeamId', 'competitionId']);
+  //       fixture = _.extend(fixture, {
+  //         homeTeam: fixt.homeTeamId,
+  //         awayTeam: fixt.awayTeamId,
+  //         competition: fixt.competitionId
+  //       });
 
   //       return db
   //         .collection('fixtures')
