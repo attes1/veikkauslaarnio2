@@ -99,7 +99,7 @@ exports.fetchFixtures = functions.https.onCall((data, context) => {
 });
 
 exports.fetchCompetitionData = functions.https.onCall((data, context) => {
-  // This function was implemented for testing purposes only and should not be used in production
+  // This function was implemented for testing / initializing purposes only and should not be used in production
   throw new functions.https.HttpsError('unavailable', 'This function is disabled');
 
   // let competition;
