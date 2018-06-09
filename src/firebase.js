@@ -13,8 +13,8 @@ firebase.initializeApp({
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
 });
 
-export const firebaseStore = firebase.firestore();
-firebaseStore.settings({ timestampsInSnapshots: true });
+export const db = firebase.firestore();
+db.settings({ timestampsInSnapshots: true });
 
 export const firebaseAuth = firebase.auth();
 export const firebaseFunctions = firebase.functions();

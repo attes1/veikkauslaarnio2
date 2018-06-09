@@ -1,5 +1,5 @@
 import { createAction, createReducer } from 'redux-act';
-import { firebaseApp, firebaseAuth, firebaseFunctions, firebaseStore } from '../firebase';
+import { firebaseApp, firebaseAuth, firebaseFunctions, db } from '../firebase';
 
 const signInSuccess = createAction('Sign in success');
 const signInFailure = createAction('Sign in failed');
@@ -44,7 +44,7 @@ export const checkAuth = () => {
   return (dispatch, getState) => {
     return firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        return firebaseStore
+        return db
           .collection('users')
           .doc(user.uid)
           .onSnapshot(userSnapshot => {
