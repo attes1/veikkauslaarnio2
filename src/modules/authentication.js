@@ -5,6 +5,8 @@ const signInSuccess = createAction('Sign in success');
 const signInFailure = createAction('Sign in failed');
 const signOutSuccess = createAction('Sign out success');
 const signOutFailure = createAction('Sign out success');
+const startVerifying = createAction('Started verification');
+const finishVerifying = createAction('Finished verification')
 const finishAuthenticating = createAction('Finished authenticating');
 const requireInvitationCode = createAction('Require invitation code');
 const invitationCodeValid = createAction('Valid invitation code entered');
@@ -70,13 +72,18 @@ export const checkAuth = () => {
 
 export const verifyUser = (code) => {
   return dispatch => {
-    firebaseFunctions
+    dispatch(startVerifying());
+
+    return firebaseFunctions
       .httpsCallable('verifyUser')({code: code})
       .then(result => {
         dispatch(invitationCodeValid());
       })
       .catch(err => {
         console.error(err);
+      })
+      .finally(() => {
+        dispatch(finishVerifying());
       });
   };
 };
@@ -94,6 +101,12 @@ export default createReducer({
   [signOutFailure]: (state, error) => {
     return Object.assign({}, { ...state, user: null, error });
   },
+  [startVerifying]: (state) => {
+    return Object.assign({}, { ...state, isVerifying: true });
+  },
+  [finishVerifying]: (state) => {
+    return Object.assign({}, { ...state, isVerifying: false });
+  },
   [finishAuthenticating]: (state) => {
     return Object.assign({}, { ...state, isAuthenticating: false });
   },
@@ -106,5 +119,6 @@ export default createReducer({
 }, {
   user: null,
   isAuthenticating: true,
+  isVerifying: false,
   invitationCodeRequired: false
 });

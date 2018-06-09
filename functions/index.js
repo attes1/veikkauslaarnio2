@@ -20,15 +20,64 @@ exports.createUser = functions.auth.user().onCreate(user => {
     displayName: user.displayName,
     email: user.email,
     photoUrl: user.photoURL,
-    verified: false,
-    bets: []
+    verified: false
   };
 
   return db
     .collection('users')
     .doc(user.uid)
     .set(userProfile)
-    .then(user => user)
+    .then(() => {
+      return db.collection('fixtures').get();
+    })
+    .then(collection => {
+      return collection.docs.map(fixt => {
+        let lockDate = '';
+
+        switch (fixt.matchday) {
+          case 1:
+          case 2:
+          case 3:
+            lockDate = 'groupStage';
+            break;
+          case 4:
+            lockDate = 'roundOf16';
+            break;
+          case 5:
+            lockDate = 'quarterfinals';
+            break;
+          case 6:
+            lockDate = 'semifinals';
+            break;
+          case 7:
+            lockDate = 'thirdPlace';
+            break;
+          case 8:
+            lockDate = 'final';
+            break;
+          default:
+            lockDate = 'groupStage';
+            break;
+        }
+
+        return {
+          lockDate: db.collection('lockDates').doc(lockDate),
+          fixture: db.collection('fixtures').doc(fixt.id.toString()),
+          goalsHomeTeam: null,
+          goalsAwayTeam: null
+        };
+      });
+    })
+    .then(bets => {
+      const betCollection = db
+        .collection('users')
+        .doc(user.uid)
+        .collection('bets');
+
+      return Promise.all(bets.map(bet => {
+        return betCollection.add(bet);
+      }));
+    })
     .catch(err => {
       console.error(err);
       return user.delete();

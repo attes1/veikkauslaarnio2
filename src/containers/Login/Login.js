@@ -87,7 +87,7 @@ class Login extends Component {
   };
 
   render() {
-    if (this.props.auth.isAuthenticating) {
+    if (this.props.auth.isAuthenticating || this.props.auth.isVerifying) {
       return (
         <Spinner />
       );
