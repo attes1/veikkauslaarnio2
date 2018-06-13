@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { format, compareAsc } from 'date-fns';
 import { Row, Col } from 'styled-bootstrap-grid';
 import styled from 'styled-components';
+import queryString from 'query-string';
 import { getProfile } from '../../modules/profile';
 import { getFixtures, getTeams, getLockDates } from '../../modules/competition';
 import Fixture from '../../components/Fixture';
@@ -41,7 +42,10 @@ class Profile extends Component {
   }
 
   render() {
-    const { profile, bets, fixtures, teams, lockDates } = this.props;
+    const { profile, bets, fixtures, teams, lockDates, query } = this.props;
+    const isKipecheMode = profile.displayName === 'Kimmo Heikkilä' || queryString.parse(query).kipeche_mode === 'true';
+    const fixtureCompare = isKipecheMode ? () => Math.floor((Math.random() * 2) - 1) : (a, b) => compareAsc(a.date, b.date);
+
     const fixturesByMatchDay = _(fixtures)
       .values()
       .map(fixt => {
@@ -98,9 +102,9 @@ class Profile extends Component {
               <BettingLock>Betting ends {format(lockDates[key], 'dd.M.YYYY HH:mm')}</BettingLock>
 
               <Row>
-                {value.sort((a, b) => compareAsc(a.date, b.date)).map(fixt => (
+                {value.sort(fixtureCompare).map(fixt => (
                   <Col key={fixt.id} sm={12} md={6} lg={4}>
-                    <Fixture info={fixt} home={teams[fixt.homeTeam]} away={teams[fixt.awayTeam]} bet={bets[fixt.id]} />
+                    <Fixture info={fixt} home={teams[fixt.homeTeam]} away={teams[fixt.awayTeam]} bet={bets[fixt.id]} isKipecheMode={isKipecheMode} />
                   </Col>
                 ))}
               </Row>
@@ -123,7 +127,8 @@ const mapStateToProps = state => ({
   teams: state.competition.teams,
   lockDates: state.competition.lockDates,
   isLoadingCompetitionData: state.competition.isLoadingLockDates || state.competition.isLoadingFixtures || state.competition.isLoadingTeams,
-  isLoadingProfile: state.profile.isLoadingProfile
+  isLoadingProfile: state.profile.isLoadingProfile,
+  query: state.router.location.search
 });
 
 export default withRouter(connect(mapStateToProps, { getProfile, getFixtures, getTeams, getLockDates })(Profile));

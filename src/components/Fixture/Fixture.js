@@ -46,7 +46,7 @@ const TBA = styled.span`
   margin-right: 0.5rem;
 `;
 
-const Fixture = ({ info, home, away, bet, increment, decrement }) => {
+const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode }) => {
   return (
   <Box>
     {home && away ?
@@ -55,12 +55,12 @@ const Fixture = ({ info, home, away, bet, increment, decrement }) => {
           <HomeTeam>
             {home.name}
             <Crest src={home.crestUrl} />
-            <NumberStepper increment={() => increment(info.id, 'goalsHomeTeam')} decrement={() => decrement(info.id, 'goalsHomeTeam')} number={bet.goalsHomeTeam} />
+            <NumberStepper increment={() => increment(info.id, 'goalsHomeTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsHomeTeam', isKipecheMode)} number={bet.goalsHomeTeam} />
           </HomeTeam>
         </Col>
         <Col sm={6}>
           <AwayTeam>
-            <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam')} decrement={() => decrement(info.id, 'goalsAwayTeam')} number={bet.goalsAwayTeam} disabled={isAfter(info.lockDate, new Date())} />
+            <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={bet.goalsAwayTeam} disabled={isAfter(info.lockDate, new Date())} />
             <Crest src={away.crestUrl} />
             {away.name}
           </AwayTeam>

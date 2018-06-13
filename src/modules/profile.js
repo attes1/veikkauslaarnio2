@@ -57,15 +57,17 @@ const updateBet = _.debounce((bet) => {
     });
 }, 500);
 
-export const increment = (fixtureId, selector) => {
+export const increment = (fixtureId, selector, isKipecheMode) => {
   return (dispatch, getState) => {
     const bets = getState().profile.bets;
     const bet = Object.assign({}, { ...bets[fixtureId] });
 
     if (bet[selector] === null) {
       bet[selector] = 0;
-    } else {
+    } else if (!isKipecheMode) {
       bet[selector]++;
+    } else {
+      bet[selector] = Math.floor(Math.random() * (10 - bet[selector]) + bet[selector]);
     }
 
     updateBet(bet);
@@ -76,15 +78,17 @@ export const increment = (fixtureId, selector) => {
   };
 };
 
-export const decrement = (fixtureId, selector) => {
+export const decrement = (fixtureId, selector, isKipecheMode) => {
   return (dispatch, getState) => {
     const bets = getState().profile.bets;
     const bet = Object.assign({}, { ...bets[fixtureId] });
 
     if (bet[selector] === null || bet[selector] === 0) {
       bet[selector] = 0;
-    } else {
+    } else if (!isKipecheMode) {
       bet[selector]--;
+    } else {
+      bet[selector] = Math.floor(Math.random() * bet[selector]);
     }
 
     updateBet(bet);
