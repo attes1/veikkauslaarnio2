@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { format, compareAsc } from 'date-fns';
 import { Row, Col } from 'styled-bootstrap-grid';
 import styled from 'styled-components';
-import queryString from 'query-string';
 import { getProfile } from '../../modules/profile';
 import { getFixtures, getTeams, getLockDates } from '../../modules/competition';
 import Fixture from '../../components/Fixture';
@@ -43,7 +42,7 @@ class Profile extends Component {
 
   render() {
     const { profile, bets, fixtures, teams, lockDates, query } = this.props;
-    const isKipecheMode = profile.displayName === 'Kimmo Heikkilä' || queryString.parse(query).kipeche_mode === 'true';
+    const isKipecheMode = profile.displayName === 'Kimmo Heikkilä' || query === '?kipeche_mode=true';
     const fixtureCompare = isKipecheMode ? () => Math.floor((Math.random() * 2) - 1) : (a, b) => compareAsc(a.date, b.date);
 
     const fixturesByMatchDay = _(fixtures)
