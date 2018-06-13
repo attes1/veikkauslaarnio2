@@ -1,7 +1,6 @@
 import { createAction, createReducer } from 'redux-act';
 import _ from 'lodash';
 import { firebaseAuth, db } from '../firebase';
-import { firebase } from '@firebase/app';
 
 const profileLoaded = createAction('Profile loaded');
 const profileNotFound = createAction('Profile not found');
