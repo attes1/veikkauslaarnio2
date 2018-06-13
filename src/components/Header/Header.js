@@ -87,9 +87,9 @@ const CloseMenuButton = OpenMenuButton.extend`
 `;
 
 const menuItems = [
-  { data: { Component: Link, to: 'dashboard', text: 'Dashboard' }, key: 'dashboard' },
-  { data: { Component: Link, to: 'predictions', text: 'Predictions' }, key: 'predictions' },
-  { data: { Component: Link, to: 'leaderboard', text: 'Leaderboard' }, key: 'leaderboard' },
+  { data: { Component: Link, to: '/dashboard', text: 'Dashboard' }, key: 'dashboard' },
+  { data: { Component: Link, to: '/profile', text: 'My picks' }, key: 'profile' },
+  { data: { Component: Link, to: '/leaderboard', text: 'Leaderboard' }, key: 'leaderboard' },
   { data: { Component: SignOutLink, text: 'Sign out' }, key: 'signOut' },
 ];
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styledNormalize from 'styled-normalize'
-import { injectGlobal, ThemeProvider } from 'styled-components'
+import styled, { injectGlobal, ThemeProvider } from 'styled-components'
 import { injectLayoutBaseCSS } from 'styled-bootstrap-grid';
 import ReactBreakpoints from 'react-breakpoints'
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history4/redirect'
@@ -13,6 +13,7 @@ import { Container } from 'styled-bootstrap-grid';
 import { checkAuth } from '../../modules/authentication';
 import Login from '../Login';
 import Dashboard from '../Dashboard';
+import Profile from '../Profile';
 import PrivaryPolicy from '../PrivacyPolicy';
 import Header from '../../components/Header';
 
@@ -59,6 +60,11 @@ injectGlobal`
   }
 `
 
+const Wrapper = styled.main`
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+`;
+
 const userIsAuthenticatedRedirect = connectedReduxRedirect({
  redirectPath: '/login',
  authenticatedSelector: state => !!state.auth.user && !state.auth.invitationCodeRequired,
@@ -97,7 +103,10 @@ class App extends Component {
 
           <HeaderWrapper />
           <Container>
-            <Route exact path="/dashboard" component={userIsAuthenticatedRedirect(Dashboard)} />
+            <Wrapper>
+              <Route exact path="/dashboard" component={userIsAuthenticatedRedirect(Dashboard)} />
+              <Route exact path="/profile/:id?" component={userIsAuthenticatedRedirect(Profile)} />
+            </Wrapper>
           </Container>
         </ReactBreakpoints>
       </ThemeProvider>
