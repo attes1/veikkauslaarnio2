@@ -104,15 +104,6 @@ exports.verifyUser = functions.https.onCall((data, context) => {
   }
 });
 
-exports.addLastModifiedTimestampToBets = functions
-  .firestore
-  .document('/users/{userId}/bets/{betId}')
-  .onUpdate((change, context) => {
-    return change.after.ref.set({
-      lastModified: admin.firestore.FieldValue.serverTimestamp()
-    }, {merge: true});
-  });
-
 exports.fetchFixtures = functions.https.onCall((data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');

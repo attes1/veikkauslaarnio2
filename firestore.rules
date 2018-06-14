@@ -1,19 +1,19 @@
 service cloud.firestore {
   match /databases/{database}/documents {
     match /lockDates/{lockDate} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
     }
 
     match /teams/{teamId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
     }
 
     match /fixtures/{fixtureId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
     }
 
     match /users/{userId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
       allow write: if request.auth.uid == userId;
 
       match /bets/{betId} {
@@ -21,8 +21,8 @@ service cloud.firestore {
           return get(/databases/$(database)/documents/$(resource.data.lockDate)).value;
         }
 
-        allow read: if request.auth.uid == userId; // || request.time > getLockDate();
-        allow update: if request.auth.uid == userId; // && request.time < getLockDate();
+        allow read: if request.auth.uid == userId;// || request.time > getLockDate();
+        allow update: if request.auth.uid == userId;// && request.time < getLockDate();
         allow create: if false;
         allow delete: if false;
 
