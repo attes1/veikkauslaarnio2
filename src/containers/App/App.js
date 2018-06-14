@@ -10,6 +10,8 @@ import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper';
 import connectedAuthWrapper from 'redux-auth-wrapper/connectedAuthWrapper'
 import { routerActions } from 'react-router-redux'
 import { Container } from 'styled-bootstrap-grid';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { checkAuth } from '../../modules/authentication';
 import Login from '../Login';
 import Dashboard from '../Dashboard';
@@ -57,6 +59,15 @@ injectGlobal`
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Fjalla One', sans-serif;
+  }
+
+  .toast {
+    font-family: 'Noto Sans', sans-serif;
+    color: ${defaultTheme.jetBlack};
+  }
+
+  .toast.error {
+    color: ${defaultTheme.sunsetOrange};
   }
 `
 
@@ -108,6 +119,7 @@ class App extends Component {
               <Route exact path="/profile/:id?" component={userIsAuthenticatedRedirect(Profile)} />
             </Wrapper>
           </Container>
+          <ToastContainer position="bottom-right" closeButton={false} toastClassName="toast" hideProgressBar={true} />
         </ReactBreakpoints>
       </ThemeProvider>
     );

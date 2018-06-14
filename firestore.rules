@@ -21,7 +21,7 @@ service cloud.firestore {
           return get(/databases/$(database)/documents/$(resource.data.fixture.lockDate)).value.seconds;
         }
 
-        allow read: if request.auth.uid == userId || request.time.seconds > getLockDate();
+        allow read: if request.auth.uid == userId || request.time.seconds() > getLockDate();
         allow update: if request.auth.uid == userId;// && request.time < getLockDate();
         allow create: if false;
         allow delete: if false;

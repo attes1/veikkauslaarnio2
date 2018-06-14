@@ -1,6 +1,7 @@
 import { createAction, createReducer } from 'redux-act';
 import _ from 'lodash';
 import { firebaseAuth, db } from '../firebase';
+import { toast } from 'react-toastify';
 
 const profileLoaded = createAction('Profile loaded');
 const profileNotFound = createAction('Profile not found');
@@ -53,6 +54,11 @@ const updateBet = _.debounce((bet) => {
     .update({
       goalsHomeTeam: bet.goalsHomeTeam,
       goalsAwayTeam: bet.goalsAwayTeam
+    })
+    .catch((err) => {
+      if (err.code === 'permission-denied') {
+        toast('Betting is locked', {className: 'toast error'});
+      }
     });
 }, 500);
 
