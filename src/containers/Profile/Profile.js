@@ -42,7 +42,7 @@ class Profile extends Component {
 
   render() {
     const { profile, bets, fixtures, teams, lockDates, query } = this.props;
-    const isKipecheMode = profile.displayName === 'Kimmo Heikkilä' || query === '?kipeche_mode=true';
+    const isKipecheMode = query === '?kipeche_mode=true';
     const fixtureCompare = isKipecheMode ? () => Math.floor((Math.random() * 2) - 1) : (a, b) => compareAsc(a.date, b.date);
 
     const fixturesByMatchDay = _(fixtures)
