@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 const loadProfile = createAction('Load profile');
 const profileLoaded = createAction('Profile loaded');
 const profileNotFound = createAction('Profile not found');
-const betsUpdated = createAction('Bets updated');
+const betUpdated = createAction('Bet updated');
 
 export const getProfile = (userId) => {
   return dispatch => {
@@ -54,8 +54,8 @@ export const getProfile = (userId) => {
   };
 };
 
-const updateBet = _.debounce((bet) => {
-  db
+const updateBet = _.debounce((bet, cancel) => {
+  return db
     .collection('users')
     .doc(firebaseAuth.currentUser.uid)
     .collection('bets')
@@ -68,13 +68,17 @@ const updateBet = _.debounce((bet) => {
       if (err.code === 'permission-denied') {
         toast('Betting is locked', {className: 'toast error'});
       }
+
+      cancel();
     });
+
 }, 500);
 
 export const increment = (fixtureId, selector, isKipecheMode) => {
   return (dispatch, getState) => {
     const bets = getState().profile.bets;
     const bet = Object.assign({}, { ...bets[fixtureId] });
+    const prevValue = Object.assign({}, { ...bet });
 
     if (bet[selector] === null) {
       bet[selector] = 0;
@@ -84,11 +88,10 @@ export const increment = (fixtureId, selector, isKipecheMode) => {
       bet[selector] = Math.floor(Math.random() * (10 - bet[selector]) + bet[selector]);
     }
 
-    updateBet(bet);
-    bets[fixtureId] = bet;
-    dispatch(betsUpdated(bets));
+    dispatch(betUpdated(bet));
+    updateBet(bet, () => dispatch(betUpdated(prevValue)));
 
-    return bets;
+    return bet;
   };
 };
 
@@ -96,6 +99,7 @@ export const decrement = (fixtureId, selector, isKipecheMode) => {
   return (dispatch, getState) => {
     const bets = getState().profile.bets;
     const bet = Object.assign({}, { ...bets[fixtureId] });
+    const prevValue = Object.assign({}, { ...bet });
 
     if (bet[selector] === null || bet[selector] === 0) {
       bet[selector] = 0;
@@ -105,11 +109,10 @@ export const decrement = (fixtureId, selector, isKipecheMode) => {
       bet[selector] = Math.floor(Math.random() * bet[selector]);
     }
 
-    updateBet(bet);
-    bets[fixtureId] = bet;
-    dispatch(betsUpdated(bets));
+    dispatch(betUpdated(bet));
+    updateBet(bet, () => dispatch(betUpdated(prevValue)));
 
-    return bets;
+    return bet;
   };
 };
 
@@ -123,8 +126,9 @@ export default createReducer({
   [profileNotFound]: (state) => {
     return Object.assign({}, { ...state, info: null, bets: null, isLoadingProfile: false });
   },
-  [betsUpdated]: (state, bets) => {
-    return Object.assign({}, { ...state, bets: Object.assign({}, { ...bets }) });
+  [betUpdated]: (state, bet) => {
+    state.bets[bet.fixtureId] = bet;
+    return Object.assign({}, { ...state, bets: { ...state.bets } });
   }
 }, {
   info: {},

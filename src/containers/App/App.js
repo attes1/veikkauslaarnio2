@@ -65,10 +65,21 @@ injectGlobal`
   .toast {
     font-family: 'Noto Sans', sans-serif;
     color: ${defaultTheme.jetBlack};
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-height: 0;
+    padding: 1rem;
+
+    [role="alert"] {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .toast.error {
     color: ${defaultTheme.sunsetOrange};
+    min-height: 0;
+    padding: 1rem;
   }
 `
 
