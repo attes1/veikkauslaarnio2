@@ -5,6 +5,8 @@ import _ from 'lodash';
 import { format, compareAsc } from 'date-fns';
 import { Row, Col } from 'styled-bootstrap-grid';
 import styled from 'styled-components';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import moneyBillAlt from '@fortawesome/fontawesome-free-solid/faMoneyBillAlt';
 import { getProfile } from '../../modules/profile';
 import { getFixtures, getTeams, getLockDates } from '../../modules/competition';
 import Fixture from '../../components/Fixture';
@@ -19,11 +21,26 @@ const matchdays = {
 };
 
 const Title = styled.h1`
-  margin: 0.5rem;
+  margin: 0;
 `;
 
 const FixtureGroupTitle = styled.h2`
   margin-bottom: 0;
+`;
+
+const ProfilePic = styled.img`
+  height: 5rem;
+`;
+
+const ProfileInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+`;
+
+const PaymentApproved = styled.span`
+  color: ${props => props.theme.greenSheen};
 `;
 
 const BettingLock = styled.span`
@@ -84,12 +101,20 @@ class Profile extends Component {
         <div>
           <Row>
             <Col auto>
-              <img src={profile.photoUrl} alt="Profile" />
+              <ProfilePic src={profile.photoUrl} alt="Profile" />
             </Col>
             <Col auto>
-              <Title>
-                {profile.displayName}
-              </Title>
+              <ProfileInfo>
+                <Title>
+                  {profile.displayName}
+                </Title>
+
+                {profile.paymentFulfilled &&
+                  <PaymentApproved>
+                    <FontAwesomeIcon title="Payment approved" icon={moneyBillAlt} />
+                  </PaymentApproved>
+                }
+              </ProfileInfo>
             </Col>
           </Row>
 

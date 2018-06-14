@@ -3,12 +3,14 @@ import _ from 'lodash';
 import { firebaseAuth, db } from '../firebase';
 import { toast } from 'react-toastify';
 
+const loadProfile = createAction('Load profile');
 const profileLoaded = createAction('Profile loaded');
 const profileNotFound = createAction('Profile not found');
 const betsUpdated = createAction('Bets updated');
 
 export const getProfile = (userId) => {
   return dispatch => {
+    dispatch(loadProfile());
     const isOwner = !userId || firebaseAuth.currentUser.uid === userId;
 
     const userDoc = db
@@ -112,6 +114,9 @@ export const decrement = (fixtureId, selector, isKipecheMode) => {
 };
 
 export default createReducer({
+  [loadProfile]: (state) => {
+    return Object.assign({}, { ...state, isLoadingProfile: true });
+  },
   [profileLoaded]: (state, profile) => {
     return Object.assign({}, { ...state, info: _.omit(profile, 'bets'), bets: profile.bets, isLoadingProfile: false });
   },
