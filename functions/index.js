@@ -104,6 +104,62 @@ exports.verifyUser = functions.https.onCall((data, context) => {
   }
 });
 
+exports.lockBets = functions.https.onCall((data, context) => {
+  const lockDate = data.lockDate;
+  const bets = [];
+
+  return db
+    .collection('users')
+    .get()
+    .then(userCollection => {
+      const betRefs = [];
+
+      userCollection.forEach(doc => {
+        const user = doc.data();
+        betRefs.push(db.collection('users').doc(doc.id).collection('bets').get());
+      });
+
+      return Promise.all(betRefs);
+    })
+    .then(betCollections => {
+      betCollections.forEach(betCollection => {
+        betCollection.forEach(doc => {
+          const bet = doc.data();
+          bets.push(_.extend(bet, {uid: doc.id, userId: betCollection._query.parent.id}));
+        });
+      });
+
+      return bets;
+    })
+    .then(() => {
+      return db
+        .collection('fixtures')
+        .where('lockDate', '==', db.collection('lockDates').doc(lockDate))
+        .get();
+    })
+    .then(fixtCollection => {
+      const fixtures = [];
+      fixtCollection.forEach(doc => {
+        fixtures.push(doc.data());
+      });
+
+      return fixtures;
+    })
+    .then(fixtures => {
+      const fixtIds = _.map(fixtures, 'id');
+      const lockableBets = bets.filter(b => fixtIds.includes(parseInt(b.fixture.id, 10)));
+
+      return Promise.all(lockableBets.map(lb => {
+        return db
+          .collection('users')
+          .doc(lb.userId)
+          .collection('bets')
+          .doc(lb.uid)
+          .update({locked: true});
+      }))
+    });
+});
+
 exports.fetchFixtures = functions.https.onCall((data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('failed-precondition', 'The function must be called while authenticated.');
