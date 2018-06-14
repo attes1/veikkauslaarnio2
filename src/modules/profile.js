@@ -9,6 +9,8 @@ const betsUpdated = createAction('Bets updated');
 
 export const getProfile = (userId) => {
   return dispatch => {
+    const isOwner = !userId || firebaseAuth.currentUser.uid === userId;
+
     const userDoc = db
       .collection('users')
       .doc(userId || firebaseAuth.currentUser.uid);
@@ -18,7 +20,12 @@ export const getProfile = (userId) => {
       .get()
       .then(_user => {
         user = _user.data();
-        return userDoc.collection('bets').get();
+
+        if (isOwner) {
+          return userDoc.collection('bets').get();
+        } else {
+          return userDoc.collection('bets').where('locked', '==', true).get();
+        }
       })
       .then(betCollection => {
         const bets = {};

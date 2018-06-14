@@ -114,7 +114,7 @@ class Profile extends Component {
     } else {
       return (
         <strong>Loading...</strong>
-      )
+      );
     }
   }
 }

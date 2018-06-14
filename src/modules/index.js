@@ -5,6 +5,7 @@ import authReducer from './authentication';
 import commonReducer from './common';
 import profileReducer from './profile';
 import competitionReducer from './competition';
+import leaderboardReducer from './leaderboard';
 
 export default combineReducers({
   router: routerReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   common: commonReducer,
   auth: authReducer,
   profile: profileReducer,
-  competition: competitionReducer
+  competition: competitionReducer,
+  leaderboard: leaderboardReducer
 });

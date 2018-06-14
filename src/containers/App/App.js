@@ -16,6 +16,7 @@ import { checkAuth } from '../../modules/authentication';
 import Login from '../Login';
 import Dashboard from '../Dashboard';
 import Profile from '../Profile';
+import Leaderboard from '../Leaderboard';
 import PrivaryPolicy from '../PrivacyPolicy';
 import Header from '../../components/Header';
 
@@ -117,6 +118,7 @@ class App extends Component {
             <Wrapper>
               <Route exact path="/dashboard" component={userIsAuthenticatedRedirect(Dashboard)} />
               <Route exact path="/profile/:id?" component={userIsAuthenticatedRedirect(Profile)} />
+              <Route exact path="/leaderboard" component={userIsAuthenticatedRedirect(Leaderboard)} />
             </Wrapper>
           </Container>
           <ToastContainer position="bottom-right" closeButton={false} toastClassName="toast" hideProgressBar={true} />
