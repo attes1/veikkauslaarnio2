@@ -8,8 +8,8 @@ import faChevronDown from '@fortawesome/fontawesome-free-solid/faChevronDown';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 1.5rem;
   justify-content: center;
+  user-select: none;
 `;
 
 const Stepper = styled.button`
@@ -17,6 +17,8 @@ const Stepper = styled.button`
   border: 0;
   cursor: pointer;
   background: transparent;
+  margin-bottom: -4px;
+  margin-top: -4px;
 
   :hover {
     color: ${props => props.theme.lapisZapuli};
@@ -27,24 +29,25 @@ const Stepper = styled.button`
   }
 `;
 
-const Number = styled.span`
+const Number = styled.strong`
   display: flex;
   justify-content: center;
+  font-size: 1.2rem;
 `;
 
 const NumberStepper = ({ number, increment, decrement, disabled }) => (
   <Wrapper>
     {!disabled && <Stepper onClick={increment}>
-      <FontAwesomeIcon icon={faChevronUp} />
+      <FontAwesomeIcon icon={faChevronUp} size="lg" />
     </Stepper>}
     <Motion
       key={number}
-      defaultStyle={{size: 1.2}}
+      defaultStyle={{size: 1.4}}
       style={{size: spring(1, {stiffiness: 60, damping: 10})}}>
       {({size}) => <Number style={{transform: `scale3d(${size}, ${size}, ${size})`}}>{number === null ? 'X' : number}</Number>}
     </Motion>
     {!disabled && <Stepper onClick={decrement}>
-      <FontAwesomeIcon icon={faChevronDown} />
+      <FontAwesomeIcon icon={faChevronDown} size="lg" />
     </Stepper>}
   </Wrapper>
 );

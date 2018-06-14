@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import { format, compareAsc } from 'date-fns';
-import { Row, Col } from 'styled-bootstrap-grid';
+import { Row, Col, GridThemeProvider } from 'styled-bootstrap-grid';
 import styled from 'styled-components';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import moneyBillAlt from '@fortawesome/fontawesome-free-solid/faMoneyBillAlt';
@@ -18,6 +18,15 @@ const matchdays = {
   semifinals: 'Semifinals',
   thirdPlace: 'Third place',
   final: 'Final'
+};
+
+const fixtureGridTheme = {
+  row: {
+    padding: 6
+  },
+  col: {
+    padding: 6
+  }
 };
 
 const Title = styled.h1`
@@ -125,13 +134,15 @@ class Profile extends Component {
               </FixtureGroupTitle>
               <BettingLock>Betting ends {format(lockDates[key], 'dd.M.YYYY HH:mm')}</BettingLock>
 
-              <Row>
-                {value.sort(fixtureCompare).map(fixt => (
-                  <Col key={fixt.id} sm={12} md={6} lg={4}>
-                    <Fixture info={fixt} home={teams[fixt.homeTeam]} away={teams[fixt.awayTeam]} bet={bets[fixt.id]} isKipecheMode={isKipecheMode} />
-                  </Col>
-                ))}
-              </Row>
+              <GridThemeProvider gridTheme={fixtureGridTheme}>
+                <Row>
+                  {value.sort(fixtureCompare).map(fixt => (
+                    <Col key={fixt.id} sm={12} md={6} lg={4} noGutter>
+                      <Fixture info={fixt} home={teams[fixt.homeTeam]} away={teams[fixt.awayTeam]} bet={bets[fixt.id]} isKipecheMode={isKipecheMode} />
+                    </Col>
+                  ))}
+                </Row>
+              </GridThemeProvider>
             </Fragment>
           ))}
         </div>

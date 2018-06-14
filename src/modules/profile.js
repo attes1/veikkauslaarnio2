@@ -37,6 +37,7 @@ export const getProfile = (userId) => {
             id: betDoc.id,
             fixtureId: bet.fixture.id,
             lockDateId: bet.lockDate.id,
+            locked: bet.locked,
             goalsHomeTeam: bet.goalsHomeTeam,
             goalsAwayTeam: bet.goalsAwayTeam
           };

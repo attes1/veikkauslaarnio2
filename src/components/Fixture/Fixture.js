@@ -1,85 +1,79 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Row, Col, media } from 'styled-bootstrap-grid';
-import { isAfter } from 'date-fns';
+import { media } from 'styled-bootstrap-grid';
 import { increment, decrement } from '../../modules/profile';
 import Section from '../Section';
 import NumberStepper from '../NumberStepper';
 
 const Box = Section.extend`
-  margin-bottom: 1rem;
-  font-size: 0.75rem;
+  display: flex;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
   padding: 0.5rem;
 `;
 
 const Crest = styled.img`
-  width: 1.2rem;
   margin-right: 0.5rem;
   margin-left: 0.5rem;
+  max-width: 1.6rem;
+  max-height: 1.2rem;
 `;
 
-const AwayTeam = styled.strong`
+const AwayTeam = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-
-  ${media.md`
-    justify-content: flex-start;
-    margin-left: -15px;
-  `}
+  flex: 50%;
 `;
 
 const HomeTeam = AwayTeam.extend`
-  flex-direction: row-reverse;
   justify-content: flex-end;
 
-  ${media.md`
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-right: -15px;
-  `}
+  strong {
+    text-align: right;
+  }
 `;
 
-const TBA = styled.span`
+const TeamTitle = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const TBA = styled.strong`
   margin-left: 0.5rem;
   margin-right: 0.5rem;
 `;
 
-const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode }) => {
-  return (
-  <Box>
+const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode }) => (
+  <Fragment>
     {home && away ?
-      <Row>
-        <Col sm={6} noGutter={true}>
-          <HomeTeam>
-            {home.name}
+      <Box>
+        <HomeTeam>
+          <TeamTitle>
+            <strong>{home.name}</strong>
             <Crest src={home.crestUrl} />
-            <NumberStepper increment={() => increment(info.id, 'goalsHomeTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsHomeTeam', isKipecheMode)} number={bet.goalsHomeTeam} />
-          </HomeTeam>
-        </Col>
-        <Col sm={6}>
-          <AwayTeam>
-            <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={bet.goalsAwayTeam} disabled={isAfter(info.lockDate, new Date())} />
+          </TeamTitle>
+          <NumberStepper increment={() => increment(info.id, 'goalsHomeTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsHomeTeam', isKipecheMode)} number={bet.goalsHomeTeam} disabled={false} />
+        </HomeTeam>
+        <AwayTeam>
+          <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={bet.goalsAwayTeam} disabled={false} />
+          <TeamTitle>
             <Crest src={away.crestUrl} />
-            {away.name}
-          </AwayTeam>
-        </Col>
-      </Row> :
-      <Row>
-        <Col sm={6}>
-          <HomeTeam>
-            <TBA>TBA</TBA>
-          </HomeTeam>
-        </Col>
-        <Col sm={6}>
-          <AwayTeam>
-            <TBA>TBA</TBA>
-          </AwayTeam>
-        </Col>
-      </Row>
+            <strong>{away.name}</strong>
+          </TeamTitle>
+        </AwayTeam>
+      </Box> :
+      <Box>
+        <HomeTeam>
+          <TBA>TBA</TBA>
+        </HomeTeam>
+        <AwayTeam>
+          <TBA>TBA</TBA>
+        </AwayTeam>
+      </Box>
     }
-  </Box>
-)};
+  </Fragment>
+);
 
 export default connect(null, { increment, decrement })(Fixture);
