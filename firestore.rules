@@ -18,10 +18,10 @@ service cloud.firestore {
 
       match /bets/{betId} {
         function getLockDate() {
-          return get(/databases/$(database)/documents/$(resource.data.lockDate)).value;
+          return get(/databases/$(database)/documents/$(resource.data.fixture.lockDate)).value.seconds;
         }
 
-        allow read: if request.auth.uid == userId;// || request.time > getLockDate();
+        allow read: if request.auth.uid == userId || request.time.seconds > getLockDate();
         allow update: if request.auth.uid == userId;// && request.time < getLockDate();
         allow create: if false;
         allow delete: if false;

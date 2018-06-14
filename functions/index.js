@@ -126,10 +126,39 @@ exports.fetchFixtures = functions.https.onCall((data, context) => {
     .then(response => {
       return Promise.all(response.data.fixtures.map(fixt => {
         let fixture = _.omit(fixt, ['homeTeamName', 'homeTeamName', 'homeTeamId', 'awayTeamId', 'competitionId']);
+        let lockDate = '';
+
+        switch (fixt.matchday) {
+          case 1:
+          case 2:
+          case 3:
+            lockDate = 'groupStage';
+            break;
+          case 4:
+            lockDate = 'roundOf16';
+            break;
+          case 5:
+            lockDate = 'quarterfinals';
+            break;
+          case 6:
+            lockDate = 'semifinals';
+            break;
+          case 7:
+            lockDate = 'thirdPlace';
+            break;
+          case 8:
+            lockDate = 'final';
+            break;
+          default:
+            lockDate = 'groupStage';
+            break;
+        }
+
         fixture = _.extend(fixture, {
           homeTeam: fixt.homeTeamId,
           awayTeam: fixt.awayTeamId,
-          competition: fixt.competitionId
+          competition: fixt.competitionId,
+          lockDate: db.collection('lockDates').doc(lockDate)
         });
 
         return db
