@@ -53,11 +53,6 @@ const Separator = styled.div`
   margin: 0 0.5rem;
 `;
 
-const TBA = styled.strong`
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-`;
-
 const Status = styled.strong`
   position: absolute;
   left: 0.5rem;
@@ -110,12 +105,19 @@ const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode })
           }
         </Box> :
         <Box>
-          <HomeTeam>
-            <TBA>TBA</TBA>
-          </HomeTeam>
-          <AwayTeam>
-            <TBA>TBA</TBA>
-          </AwayTeam>
+          <MatchUp>
+            <HomeTeam>
+              <TeamTitle>
+                <strong>TBA</strong>
+              </TeamTitle>
+            </HomeTeam>
+            <Separator><strong>-</strong></Separator>
+            <AwayTeam>
+              <TeamTitle>
+                <strong>TBA</strong>
+              </TeamTitle>
+            </AwayTeam>
+          </MatchUp>
         </Box>
       }
     </Fragment>
