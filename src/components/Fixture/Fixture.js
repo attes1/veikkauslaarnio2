@@ -80,7 +80,7 @@ const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode })
             </HomeTeam>
             {(!bet || bet.locked) && <Separator><strong>-</strong></Separator>}
             <AwayTeam>
-              <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={_.get(bet, 'goalsHomeTeam')} disabled={!bet || bet.locked} />
+              <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={_.get(bet, 'goalsAwayTeam')} disabled={!bet || bet.locked} />
               <TeamTitle>
                 <Crest src={away.crestUrl} />
                 <strong>{away.name}</strong>
