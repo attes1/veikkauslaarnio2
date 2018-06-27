@@ -69,7 +69,9 @@ export const getFixtures = () => {
             fixtures[doc.id] = doc.data();
             fixtures[doc.id].date = new Date(fixtures[doc.id].date);
           });
+
           dispatch(fixturesLoaded(fixtures));
+          addFixtureObserver();
 
           return fixtures;
         });

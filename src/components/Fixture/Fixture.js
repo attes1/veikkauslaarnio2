@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import styled from 'styled-components';
-import { media } from 'styled-bootstrap-grid';
 import { increment, decrement } from '../../modules/profile';
 import Section from '../Section';
 import NumberStepper from '../NumberStepper';
@@ -58,6 +58,15 @@ const TBA = styled.strong`
   margin-right: 0.5rem;
 `;
 
+const Status = styled.strong`
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  font-size: 0.7rem;
+  color: ${props => props.theme.greenSheen};
+  transform: rotateZ(-33deg);
+`;
+
 const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode }) => {
   const result = info.result.goalsHomeTeam !== null && info.result.goalsAwayTeam !== null ? info.result : null;
 
@@ -65,24 +74,25 @@ const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode })
     <Fragment>
       {home && away ?
         <Box>
+          {info.status === 'IN_PLAY' && <Status>LIVE</Status>}
           <MatchUp>
             <HomeTeam>
               <TeamTitle>
                 <strong>{home.name}</strong>
                 <Crest src={home.crestUrl} />
               </TeamTitle>
-              <NumberStepper increment={() => increment(info.id, 'goalsHomeTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsHomeTeam', isKipecheMode)} number={bet.goalsHomeTeam} disabled={bet.locked} />
+              <NumberStepper increment={() => increment(info.id, 'goalsHomeTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsHomeTeam', isKipecheMode)} number={_.get(bet, 'goalsHomeTeam')} disabled={!bet || bet.locked} />
             </HomeTeam>
-            {bet.locked && <Separator><strong>-</strong></Separator>}
+            {(!bet || bet.locked) && <Separator><strong>-</strong></Separator>}
             <AwayTeam>
-              <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={bet.goalsAwayTeam} disabled={bet.locked} />
+              <NumberStepper increment={() => increment(info.id, 'goalsAwayTeam', isKipecheMode)} decrement={() => decrement(info.id, 'goalsAwayTeam', isKipecheMode)} number={_.get(bet, 'goalsHomeTeam')} disabled={!bet || bet.locked} />
               <TeamTitle>
                 <Crest src={away.crestUrl} />
                 <strong>{away.name}</strong>
               </TeamTitle>
             </AwayTeam>
           </MatchUp>
-          {bet.locked &&
+          {(bet && bet.locked) &&
             <Fragment>
               {result ?
                 <Result>

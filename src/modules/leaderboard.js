@@ -32,26 +32,30 @@ export const getProfiles = () => {
                 user.bets.push(doc.data());
               });
 
-              user.points = user.bets.reduce((sum, bet) => {
-                const result = fixtures[bet.fixture.id].result;
+              user.points = user.bets
+                .filter(bet => {
+                  return fixtures[bet.fixture.id].status === 'FINISHED';
+                })
+                .reduce((sum, bet) => {
+                  const result = fixtures[bet.fixture.id].result;
 
-                if (bet.goalsHomeTeam === null || bet.goalsAwayTeam === null || result.goalsHomeTeam === null || result.goalsAwayTeam === null) {
-                  return sum;
-                } else if (result.goalsHomeTeam === bet.goalsHomeTeam && result.goalsAwayTeam === bet.goalsAwayTeam) {
-                  return sum + 3;
-                } else if (result.goalsHomeTeam > result.goalsAwayTeam && bet.goalsHomeTeam > bet.goalsAwayTeam) {
-                  return sum + 1;
-                } else if (result.goalsHomeTeam < result.goalsAwayTeam && bet.goalsHomeTeam < bet.goalsAwayTeam) {
-                  return sum + 1;
-                } else if (result.goalsHomeTeam === result.goalsAwayTeam && bet.goalsHomeTeam === bet.goalsAwayTeam) {
-                  return sum + 1;
-                } else {
-                  return sum;
-                }
-              }, 0);
+                  if (bet.goalsHomeTeam === null || bet.goalsAwayTeam === null || result.goalsHomeTeam === null || result.goalsAwayTeam === null) {
+                    return sum;
+                  } else if (result.goalsHomeTeam === bet.goalsHomeTeam && result.goalsAwayTeam === bet.goalsAwayTeam) {
+                    return sum + 3;
+                  } else if (result.goalsHomeTeam > result.goalsAwayTeam && bet.goalsHomeTeam > bet.goalsAwayTeam) {
+                    return sum + 1;
+                  } else if (result.goalsHomeTeam < result.goalsAwayTeam && bet.goalsHomeTeam < bet.goalsAwayTeam) {
+                    return sum + 1;
+                  } else if (result.goalsHomeTeam === result.goalsAwayTeam && bet.goalsHomeTeam === bet.goalsAwayTeam) {
+                    return sum + 1;
+                  } else {
+                    return sum;
+                  }
+                }, 0);
 
-              return user;
-            });
+                return user;
+              });
 
           bcPromises.push(bcPromise);
         });

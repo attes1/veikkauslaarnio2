@@ -44,7 +44,7 @@ const NumberStepper = ({ number, increment, decrement, disabled }) => (
       key={number}
       defaultStyle={{size: 1.4}}
       style={{size: spring(1, {stiffiness: 60, damping: 10})}}>
-      {({size}) => <Number style={{transform: `scale3d(${size}, ${size}, ${size})`}}>{number === null ? 'X' : number}</Number>}
+      {({size}) => <Number style={{transform: `scale3d(${size}, ${size}, ${size})`}}>{number == null ? 'X' : number}</Number>}
     </Motion>
     {!disabled && <Stepper onClick={decrement}>
       <FontAwesomeIcon icon={faChevronDown} size="lg" />
