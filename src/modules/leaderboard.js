@@ -39,17 +39,19 @@ export const getProfiles = () => {
                   })
                   .reduce((sum, bet) => {
                     const result = fixtures[bet.fixture.id].result;
+                    const isPlayoffs = fixtures[bet.fixture.id].matchday > 3;
+                    const baseScore = isPlayoffs ? 2 : 1;
 
                     if (bet.goalsHomeTeam === null || bet.goalsAwayTeam === null || result.goalsHomeTeam === null || result.goalsAwayTeam === null) {
                       return sum;
                     } else if (result.goalsHomeTeam === bet.goalsHomeTeam && result.goalsAwayTeam === bet.goalsAwayTeam) {
-                      return sum + 3;
+                      return sum + baseScore + 2;
                     } else if (result.goalsHomeTeam > result.goalsAwayTeam && bet.goalsHomeTeam > bet.goalsAwayTeam) {
-                      return sum + 1;
+                      return sum + baseScore;
                     } else if (result.goalsHomeTeam < result.goalsAwayTeam && bet.goalsHomeTeam < bet.goalsAwayTeam) {
-                      return sum + 1;
+                      return sum + baseScore;
                     } else if (result.goalsHomeTeam === result.goalsAwayTeam && bet.goalsHomeTeam === bet.goalsAwayTeam) {
-                      return sum + 1;
+                      return sum + baseScore;
                     } else {
                       return sum;
                     }
