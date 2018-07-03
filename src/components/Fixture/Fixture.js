@@ -46,6 +46,10 @@ const TeamTitle = styled.div`
 const Result = styled.div`
   text-align: center;
   margin-top: 0.5rem;
+
+  span {
+    margin-left: 0.5rem;
+  }
 `;
 
 const Separator = styled.div`
@@ -94,7 +98,7 @@ const Fixture = ({ info, home, away, bet, increment, decrement, isKipecheMode })
                   <strong>Result: </strong>
                   <strong>{result.goalsHomeTeam} - {result.goalsAwayTeam}</strong>
                   {result.extraTime && <span>({result.extraTime.goalsHomeTeam} - {result.extraTime.goalsAwayTeam})</span>}
-                  {result.penaltyShootout && <span>({result.extraTime.goalsHomeTeam} - {result.extraTime.goalsAwayTeam})</span>}
+                  {result.penaltyShootout && <span>({result.penaltyShootout.goalsHomeTeam} - {result.penaltyShootout.goalsAwayTeam})</span>}
                 </Result> :
                 <Result>
                   <strong>Result: </strong>
